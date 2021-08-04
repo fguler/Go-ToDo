@@ -10,11 +10,5 @@
       "topic": "Test 2",
       "status": false,
       "date": "2021-07-26T21:05:00+03:00"
-   },
-   {
-      "id": "24a47b4b-e6c5-4bcd-b3c3-baad71b63dfa",
-      "topic": "Test 3",
-      "status": false,
-      "date": "2021-07-30T21:36:12+03:00"
    }
 ]

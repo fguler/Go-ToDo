@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/fguler/goToDo/domain"
+	"github.com/fguler/goToDo/pgk/models"
 	"github.com/gorilla/mux"
 )
 
@@ -55,7 +55,7 @@ func (h *handler) AddTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task := domain.Task{}
+	task := models.Task{}
 
 	//using MaxBytesReader to enforce a maximum read of 1MB from response body
 	r.Body = http.MaxBytesReader(w, r.Body, 1048576)

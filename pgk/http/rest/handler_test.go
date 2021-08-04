@@ -10,8 +10,8 @@ import (
 
 	"github.com/fguler/goToDo/pgk/config"
 	"github.com/fguler/goToDo/pgk/http/rest"
+	"github.com/fguler/goToDo/pgk/storage/json"
 	"github.com/fguler/goToDo/pgk/task"
-	"github.com/fguler/goToDo/storage/json"
 	"github.com/gorilla/mux"
 )
 
@@ -20,7 +20,6 @@ var r *mux.Router
 func TestMain(m *testing.M) {
 
 	conf := config.NewConfig()
-	//conf.ConnStr = json.GetDBPath("/storage/json/db_test.json")
 	conf.ConnStr = json.GetDBPath("db_test.json")
 
 	db, err := json.NewDB(conf)
@@ -36,7 +35,7 @@ func TestMain(m *testing.M) {
 	rest.RegisterRoutes(ts, r)
 
 	exitVal := m.Run()
-	log.Println("Clean up stuff after tests here!!!")
+	log.Println("TODO: Clean up stuff after tests here!!!")
 	os.Exit(exitVal)
 
 }
@@ -51,6 +50,7 @@ func Test_AddTask(t *testing.T) {
 	sr := strings.NewReader(task)
 
 	req, err := http.NewRequest("POST", "/api/v1/task", sr)
+	req.Header.Set("Content-Type", "application/json")
 
 	if err != nil {
 		t.Fatalf("Can't create request, got : %v", err)

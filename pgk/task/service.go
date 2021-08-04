@@ -4,26 +4,26 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/fguler/goToDo/domain"
+	"github.com/fguler/goToDo/pgk/models"
 	"github.com/google/uuid"
 )
 
 type Service struct {
-	repo domain.TaskRepository
+	repo models.TaskRepository
 }
 
-func NewTaskService(r domain.TaskRepository) *Service {
+func NewTaskService(r models.TaskRepository) *Service {
 	return &Service{
 		repo: r,
 	}
 }
 
-func (s *Service) GetTasks() []domain.Task {
+func (s *Service) GetTasks() []models.Task {
 	return s.repo.FindAll()
 }
 
 //Add creates a new task
-func (s *Service) Add(task domain.Task) (domain.Task, error) {
+func (s *Service) Add(task models.Task) (models.Task, error) {
 
 	task.Id = uuid.New().String()
 	//default due date is 3 days
@@ -39,9 +39,9 @@ func (s *Service) Add(task domain.Task) (domain.Task, error) {
 }
 
 //FindByID returns a single task by ID
-func (s *Service) FindByID(id string) (domain.Task, error) {
+func (s *Service) FindByID(id string) (models.Task, error) {
 
-	var t domain.Task
+	var t models.Task
 
 	tasks := s.GetTasks()
 
@@ -55,7 +55,7 @@ func (s *Service) FindByID(id string) (domain.Task, error) {
 
 }
 
-func (s *Service) Update(t domain.Task) error {
+func (s *Service) Update(t models.Task) error {
 	return s.repo.Update(t)
 }
 

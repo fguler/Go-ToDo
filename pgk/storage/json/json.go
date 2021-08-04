@@ -8,8 +8,8 @@ import (
 	"path"
 	"sync"
 
-	"github.com/fguler/goToDo/domain"
 	"github.com/fguler/goToDo/pgk/config"
+	"github.com/fguler/goToDo/pgk/models"
 )
 
 var lock = &sync.Mutex{} // there is also sync.Once option
@@ -23,7 +23,7 @@ type TaskSaver interface {
 
 type JsonDB struct {
 	path  string
-	tasks []domain.Task
+	tasks []models.Task
 }
 
 // NewDB returns an instance of JsonDB, which is a singleton
@@ -71,7 +71,7 @@ func (db *JsonDB) loadFromFile() error {
 	}
 
 	for dec.More() {
-		var t domain.Task
+		var t models.Task
 		if err = dec.Decode(&t); err != nil {
 			return err
 		}
@@ -112,7 +112,7 @@ func (db *JsonDB) saveToFile() error {
 }
 
 //Add adds new task to the database
-func (db *JsonDB) Add(t domain.Task) error {
+func (db *JsonDB) Add(t models.Task) error {
 
 	db.tasks = append(db.tasks, t)
 
@@ -120,9 +120,9 @@ func (db *JsonDB) Add(t domain.Task) error {
 }
 
 //FindByID returns the task with given ID
-func (db *JsonDB) FindByID(id string) (domain.Task, error) {
+func (db *JsonDB) FindByID(id string) (models.Task, error) {
 
-	var ta domain.Task
+	var ta models.Task
 
 	for _, t := range db.tasks {
 
@@ -136,12 +136,12 @@ func (db *JsonDB) FindByID(id string) (domain.Task, error) {
 }
 
 //FindAll return all tasks
-func (db *JsonDB) FindAll() []domain.Task {
+func (db *JsonDB) FindAll() []models.Task {
 	return db.tasks
 }
 
 //Update updates to given task
-func (db *JsonDB) Update(t domain.Task) error {
+func (db *JsonDB) Update(t models.Task) error {
 
 	for i, tk := range db.tasks {
 

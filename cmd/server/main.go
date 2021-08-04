@@ -8,8 +8,8 @@ import (
 
 	"github.com/fguler/goToDo/pgk/config"
 	"github.com/fguler/goToDo/pgk/http/rest"
+	"github.com/fguler/goToDo/pgk/storage/json"
 	"github.com/fguler/goToDo/pgk/task"
-	"github.com/fguler/goToDo/storage/json"
 	"github.com/gorilla/mux"
 )
 
@@ -17,8 +17,10 @@ func main() {
 
 	conf := config.NewConfig()
 
-	conf.ConnStr = getEnvValue("CONN_STRING", json.GetDBPath("/storage/json/db.json"))
+	conf.ConnStr = getEnvValue("CONN_STRING", json.GetDBPath("/pgk/storage/json/db.json"))
 	conf.Env = getEnvValue("ENV", "development")
+	conf.Host = getEnvValue("HOST", "localhost")
+	conf.Port = getEnvValue("PORT", "7070")
 
 	if err := run(conf); err != nil {
 		log.Fatal(err)
@@ -28,12 +30,7 @@ func main() {
 
 func run(conf *config.AppConfig) error {
 
-	var host, port string
-
-	host = getEnvValue("HOST", "localhost")
-	port = getEnvValue("PORT", "7070")
-
-	address := net.JoinHostPort(host, port)
+	address := net.JoinHostPort(conf.Host, conf.Port)
 
 	db, err := json.NewDB(conf)
 	if err != nil {
