@@ -18,7 +18,7 @@ func (h *handler) GetTasks(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(tasks); err != nil {
-		http.Error(w, "something went bad", http.StatusInternalServerError)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		fmt.Println(err)
 		return
 	}
@@ -39,7 +39,7 @@ func (h *handler) FindByID(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	if err = json.NewEncoder(w).Encode(task); err != nil {
-		http.Error(w, "something went bad", http.StatusInternalServerError)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
@@ -64,14 +64,15 @@ func (h *handler) AddTask(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&task); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
 
 	// add the new task to database
 	task, err := h.taskService.Add(task)
 	if err != nil {
-		http.Error(w, "something went bad", http.StatusInternalServerError)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
@@ -80,7 +81,7 @@ func (h *handler) AddTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(task); err != nil {
-		http.Error(w, "something went bad", http.StatusInternalServerError)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
