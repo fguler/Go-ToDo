@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net"
 	"net/http"
 	"os"
@@ -11,28 +10,38 @@ import (
 	"github.com/fguler/goToDo/pgk/storage/json"
 	"github.com/fguler/goToDo/pgk/task"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
+
+type application struct {
+	conf   *config.Config
+	server *http.Server
+}
 
 func main() {
 
-	conf := config.NewConfig()
+	app := application{}
+	appConf := config.NewAppConfig()
+	app.conf = appConf
 
-	conf.ConnStr = getEnvValue("CONN_STRING", json.GetDBPath("/pgk/storage/json/db.json"))
-	conf.Env = getEnvValue("ENV", "development")
-	conf.Host = getEnvValue("HOST", "localhost")
-	conf.Port = getEnvValue("PORT", "7070")
+	// load .env vars
+	if err := godotenv.Load(".env"); err != nil {
+		app.conf.ErrorLog.Fatal(err)
+	}
 
-	if err := run(conf); err != nil {
-		log.Fatal(err)
+	if err := app.start(); err != nil {
+		app.conf.ErrorLog.Fatal(err)
 	}
 
 }
 
-func run(conf *config.AppConfig) error {
+//start runs the server
+func (app *application) start() error {
 
-	address := net.JoinHostPort(conf.Host, conf.Port)
+	address := net.JoinHostPort(os.Getenv("HOST"), os.Getenv("PORT"))
 
-	db, err := json.NewDB(conf)
+	db, err := json.NewDB(os.Getenv("DB_URL"))
+
 	if err != nil {
 		return err
 	}
@@ -47,17 +56,18 @@ func run(conf *config.AppConfig) error {
 		Handler: r,
 		Addr:    address,
 	}
+	app.server = &svr
 
-	log.Printf("Starting aplication on %s \n", svr.Addr)
+	app.conf.InfoLog.Printf("Starting aplication on %s \n", svr.Addr)
 	err = svr.ListenAndServe()
 	if err != nil {
 		return err
 	}
 
 	return nil
-
 }
 
+/*
 func getEnvValue(envName string, defaultValue string) string {
 	if val, ok := os.LookupEnv(envName); ok {
 		return val
@@ -65,3 +75,4 @@ func getEnvValue(envName string, defaultValue string) string {
 
 	return defaultValue
 }
+*/

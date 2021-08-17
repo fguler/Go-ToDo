@@ -4,18 +4,15 @@ import (
 	"log"
 	"os"
 	"testing"
-
-	"github.com/fguler/goToDo/pgk/config"
 )
 
 var dbTest *JsonDB
 
 func TestMain(m *testing.M) {
 
-	conf := config.NewConfig()
-	conf.ConnStr = "./db_test.json"
+	dbUrl := GetDBPath("db_test.json")
 
-	f, err := os.Create(conf.ConnStr)
+	f, err := os.Create(dbUrl)
 	if err != nil {
 		log.Fatal("TestMain can't create db_test.json file!")
 	}
@@ -26,11 +23,11 @@ func TestMain(m *testing.M) {
 		log.Fatal("TestMain can't write to db_test.json file!")
 	}
 
-	dbTest, _ = NewDB(conf)
+	dbTest, _ = NewDB(dbUrl)
 
 	exitVal := m.Run()
 
-	err = os.Remove(conf.ConnStr)
+	err = os.Remove(dbUrl)
 	if err != nil {
 		log.Fatal("TestMain can't remove db_test.json file!")
 	}

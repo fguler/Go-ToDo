@@ -8,7 +8,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fguler/goToDo/pgk/config"
 	"github.com/fguler/goToDo/pgk/http/rest"
 	"github.com/fguler/goToDo/pgk/storage/json"
 	"github.com/fguler/goToDo/pgk/task"
@@ -19,10 +18,9 @@ var r *mux.Router
 
 func TestMain(m *testing.M) {
 
-	conf := config.NewConfig()
-	conf.ConnStr = json.GetDBPath("db_test.json")
+	dbUrl := json.GetDBPath("db_test.json")
 
-	db, err := json.NewDB(conf)
+	db, err := json.NewDB(dbUrl)
 
 	if err != nil {
 		log.Fatal("TestMain can't create a db_test.json file!")

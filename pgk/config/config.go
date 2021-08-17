@@ -1,13 +1,21 @@
 package config
 
-type AppConfig struct {
-	ConnStr string
-	Env     string
-	Host    string
-	Port    string
+import (
+	"log"
+	"os"
+)
+
+type Config struct {
+	InfoLog  *log.Logger
+	ErrorLog *log.Logger
 }
 
-//NewConfig creates a new config an returns it
-func NewConfig() *AppConfig {
-	return &AppConfig{}
+//NewAppConfig creates a app config an returns it
+func NewAppConfig() *Config {
+
+	ac := Config{}
+	ac.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	ac.ErrorLog = log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	return &ac
 }

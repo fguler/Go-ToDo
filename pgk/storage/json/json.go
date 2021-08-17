@@ -8,7 +8,6 @@ import (
 	"path"
 	"sync"
 
-	"github.com/fguler/goToDo/pgk/config"
 	"github.com/fguler/goToDo/pgk/models"
 )
 
@@ -27,15 +26,14 @@ type JsonDB struct {
 }
 
 // NewDB returns an instance of JsonDB, which is a singleton
-func NewDB(conf *config.AppConfig) (*JsonDB, error) {
+func NewDB(DBUrl string) (*JsonDB, error) {
 
+	lock.Lock()
+	defer lock.Unlock()
 	if jsonDB == nil {
 
-		lock.Lock()
-		defer lock.Unlock()
-
 		jsonDB = &JsonDB{
-			path: conf.ConnStr,
+			path: DBUrl,
 		}
 		//loads existing tasks into memory
 		if err := jsonDB.loadFromFile(); err != nil {
